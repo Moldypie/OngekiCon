@@ -4,11 +4,18 @@
  * - https://github.com/dmadison/ArduinoXInput
  * - https://github.com/PaulStoffregen/Encoder
  * 
+ * You will also need to add this to your arduino IDE's hardware folder
+ * - https://github.com/dmadison/ArduinoXInput_AVR
+ * 
  * This file was created with Arduino Leonardo board in mind
  * 
  * USAGE:
  * this will cover your basic XInput controller for ONGEKI
- * lever is done using an encoder with a 0 value of straight up. +-87 each direction
+ * 
+ * ONGEKI's XInput lever is processed as when neither trigger is pressed, your character is in the center of the screen.
+ * Press the left side and it moves left, release and it returns to center. Same with the right side
+ * 
+ * lever is done here using an encoder with a 0 value of straight up. +-87 each direction
  * you will need to have the lever straight up upon each boot of the controller, later I'll do this with a potentiometer so we can avoid this...but for now, good enough.
  * the buttons are standard emulated XInput buttons. Test/Service are still keyboard binds with ONGEKI, so I did not include those buttons
  */
