@@ -17,7 +17,8 @@
  * 
  * My lever is done using a potentiometer that has a range of 15-1023, so you may need to edit the numbers I used.
  * I set the lever range to 513 which is an approximate halfway point.
- * I also set the lever calculations to work around that half way point.
+ * I also set the lever calculations to work around that half way point. 
+ * You might also have to flip lever values based on which direction your potentiometer faces.
  * 
  * Lights use a ws2812b strip. This currently only has 12 lights programmed. 3 for each side button and 2 sets of button lights
  * the lights are set to always be on as segatools does not yet support HID for ONGEKI
@@ -33,8 +34,8 @@ CRGB leds[NUM_LEDS];
 
 // Lever Setup
 int leverRange = 513;
-int positionL = 0;
-int positionR = 0;
+int positionA = 0;
+int positionB = 0;
 
 // Lever Pins
 const int Pin_Lever = A0;
@@ -118,16 +119,16 @@ void loop() {
   XInput.setButton(BUTTON_START, rightMenu);
 
   // Set XInput trigger values
-  XInput.setTrigger(TRIGGER_LEFT, positionR);
-  XInput.setTrigger(TRIGGER_RIGHT, positionL);
+  XInput.setTrigger(TRIGGER_LEFT, positionB);
+  XInput.setTrigger(TRIGGER_RIGHT, positionA);
 
   // Calculate lever values
   if(lever < 513){
-    positionR = -(lever-leverRange);
+    positionB = -(lever-leverRange);
   }else{
-    positionL = lever-leverRange;
+    positionA = lever-leverRange;
   }
-
+  
   // Send control data to the computer
   XInput.send();
 }
