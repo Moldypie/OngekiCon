@@ -69,8 +69,8 @@ void setup() {
   pinMode(Pin_RightSide, INPUT_PULLUP);
   pinMode(Pin_LeftMenu, INPUT_PULLUP);
   pinMode(Pin_RightMenu, INPUT_PULLUP);
-	XInput.setAutoSend(false);  // Wait for all controls before sending
-	XInput.begin();
+  XInput.setAutoSend(false);  // Wait for all controls before sending
+  XInput.begin();
 }
 
 void loop() {
@@ -92,7 +92,7 @@ void loop() {
   }  
   FastLED.show();
   
-	// Read pin values and store in variables
+  // Read pin values and store in variables
   int lever = analogRead(Pin_Lever);
   boolean leftA = !digitalRead(Pin_LeftA);
   boolean leftB = !digitalRead(Pin_LeftB);
@@ -108,7 +108,7 @@ void loop() {
   // Set XInput DPAD values
   XInput.setDpad(leftB, leftB, leftA, leftC);//leftB listed twice because I needed something to fill that second dpad slot..it's unused in game
   
-	// Set XInput buttons
+  // Set XInput buttons
   XInput.setButton(BUTTON_X, rightA);
   XInput.setButton(BUTTON_Y, rightB);
   XInput.setButton(BUTTON_B, rightC);
@@ -117,7 +117,7 @@ void loop() {
   XInput.setButton(BUTTON_BACK, leftMenu);
   XInput.setButton(BUTTON_START, rightMenu);
 
-	// Set XInput trigger values
+  // Set XInput trigger values
   XInput.setTrigger(TRIGGER_LEFT, positionR);
   XInput.setTrigger(TRIGGER_RIGHT, positionL);
 
@@ -127,7 +127,7 @@ void loop() {
   }else{
     positionL = lever-leverRange;
   }
-  
-	// Send control data to the computer
-	XInput.send();
+
+  // Send control data to the computer
+  XInput.send();
 }
