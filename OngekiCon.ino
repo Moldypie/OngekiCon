@@ -3,6 +3,7 @@
  * Before you can use this code, make sure to download needed libraries
  * - https://github.com/dmadison/ArduinoXInput
  * - https://github.com/PaulStoffregen/Encoder
+ * - https://github.com/FastLED/FastLED
  * 
  * You will also need to add this to your arduino IDE's hardware folder
  * - https://github.com/dmadison/ArduinoXInput_AVR
@@ -18,10 +19,19 @@
  * lever is done here using an encoder with a 0 value of straight up. +-87 each direction
  * you will need to have the lever straight up upon each boot of the controller, later I'll do this with a potentiometer so we can avoid this...but for now, good enough.
  * the buttons are standard emulated XInput buttons. Test/Service are still keyboard binds with ONGEKI, so I did not include those buttons
+ * 
+ * Lights use a ws2912b strip. This currently only has 12 lights programmed. 3 for each side button and 2 sets of button lights
+ * the lights are set to always be on as segatools does not yet support HID for ONGEKI
  */
 
 #include <XInput.h>
 #include <Encoder.h>
+#include <FastLED.h>
+
+// LED Strip Setup
+#define LED_PIN     12
+#define NUM_LEDS    12
+CRGB leds[NUM_LEDS];
 
 // Lever Setup
 float lever = 0;
@@ -45,7 +55,13 @@ const int Pin_LeftMenu = 10;
 const int Pin_RightMenu = 11;
 
 void setup() {
-// Set buttons as inputs, using internal pull-up resistors
+  // LED Setup
+  FastLED.addLeds<WS2812B, LED_PIN, GRB>(leds, NUM_LEDS);
+
+  // Lever Setup
+  XInput.setTriggerRange(0, 87);
+  
+  // Set buttons as inputs, using internal pull-up resistors
   pinMode(Pin_LeftA, INPUT_PULLUP);
   pinMode(Pin_LeftB, INPUT_PULLUP);
   pinMode(Pin_LeftC, INPUT_PULLUP);
@@ -63,6 +79,21 @@ void setup() {
 void loop() {
   // Lever Setup
   lever = (float)(enc.read());
+
+  // LED Colors
+  for(int i = 0; i < 3; ++i){
+    leds[i] = CRGB(255, 20, 255);
+  }  
+  leds[3] = CRGB::Red;
+  leds[4] = CRGB::Green;
+  leds[5] = CRGB::Blue;
+  leds[6] = CRGB::Red;
+  leds[7] = CRGB::Green;
+  leds[8] = CRGB::Blue;
+  for(int i = 9; i < 12; ++i){
+    leds[i] = CRGB(255, 20, 255);
+  }  
+  FastLED.show();
   
 	// Read pin values and store in variables
   boolean leftA = !digitalRead(Pin_LeftA);
