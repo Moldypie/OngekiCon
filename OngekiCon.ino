@@ -11,6 +11,7 @@
  * 
  * USAGE:
  * this will cover your basic XInput controller for ONGEKI
+ * This was made for this fork of segatools https://mega.nz/#!M9FkgaIa!hHdA9t6FQXmqotL1gQ_d3zRkyudbO6h0jbS3ZSEt6jY
  * 
  * ONGEKI's XInput lever is processed as when neither trigger is pressed, your character is in the center of the screen.
  * Press the left side and it moves left, release and it returns to center. Same with the right side
