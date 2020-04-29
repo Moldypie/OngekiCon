@@ -11,15 +11,13 @@
  * 
  * USAGE:
  * this will cover your basic XInput controller for ONGEKI
- * This was made for this fork of segatools https://mega.nz/#!M9FkgaIa!hHdA9t6FQXmqotL1gQ_d3zRkyudbO6h0jbS3ZSEt6jY
  * 
  * ONGEKI's XInput lever is processed as when neither trigger is pressed, your character is in the center of the screen.
  * Press the left side and it moves left, release and it returns to center. Same with the right side
  * 
- * My lever is done using a potentiometer that has a range of 15-1023, so you may need to edit the numbers I used.
- * I set the lever range to 513 which is an approximate halfway point.
- * I also set the lever calculations to work around that half way point. 
- * You might also have to flip lever values based on which direction your potentiometer faces.
+ * I set the lever range to 519 which is an approximate halfway point between the min and max values of my potentiometer.
+ * That half way point has to be calculated because you're splitting one input method between two "triggers"
+ * I also set the lever calculations to work around that half way point.
  * 
  * Lights use a ws2812b strip. This currently only has 12 lights programmed. 3 for each side button and 2 sets of button lights
  * the lights are set to always be on as segatools does not yet support HID for ONGEKI
@@ -34,7 +32,7 @@
 CRGB leds[NUM_LEDS];
 
 // Lever Setup
-int leverRange = 513;
+int leverRange = 519;//519
 int positionA = 0;
 int positionB = 0;
 
@@ -76,9 +74,6 @@ void setup() {
 }
 
 void loop() {
-  // Lever Setup
-  //lever = (float)(enc.read());
-
   // LED Colors
   for(int i = 0; i < 3; ++i){
     leds[i] = CRGB(255, 20, 255);
@@ -91,7 +86,7 @@ void loop() {
   leds[8] = CRGB::Blue;
   for(int i = 9; i < 12; ++i){
     leds[i] = CRGB(255, 20, 255);
-  }  
+  } 
   FastLED.show();
   
   // Read pin values and store in variables
@@ -107,8 +102,8 @@ void loop() {
   boolean leftMenu  = !digitalRead(Pin_LeftMenu);
   boolean rightMenu = !digitalRead(Pin_RightMenu);
 
-  // Set XInput DPAD values
-  XInput.setDpad(leftB, leftB, leftA, leftC);//leftB listed twice because I needed something to fill that second dpad slot..it's unused in game
+  // Set XInput DPAD values and allow simultaneous opposite direction pressing
+  XInput.setDpad(leftB, leftB, leftA, leftC, false);// leftB listed twice because I needed something to fill that second dpad slot..it's unused in game
   
   // Set XInput buttons
   XInput.setButton(BUTTON_X, rightA);
@@ -120,14 +115,17 @@ void loop() {
   XInput.setButton(BUTTON_START, rightMenu);
 
   // Set XInput trigger values
-  XInput.setTrigger(TRIGGER_LEFT, positionB);
-  XInput.setTrigger(TRIGGER_RIGHT, positionA);
+  XInput.setTrigger(TRIGGER_LEFT, positionA);
+  XInput.setTrigger(TRIGGER_RIGHT, positionB);
 
   // Calculate lever values
-  if(lever < 513){
+  if(lever < leverRange){
     positionB = -(lever-leverRange);
-  }else{
+  }else if( lever > leverRange){
     positionA = lever-leverRange;
+  }else{
+    positionA = 0;
+    positionB = 0;
   }
   
   // Send control data to the computer
